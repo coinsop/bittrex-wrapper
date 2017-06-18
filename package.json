@@ -1,0 +1,55 @@
+{
+  "name": "bittrex-wrapper",
+  "version": "0.0.1",
+  "description": "Bittrex exchange API wrapper",
+  "main": "index.js",
+  "scripts": {
+    "test": "babel-node ./node_modules/.bin/isparta cover _mocha",
+    "lint": "gulp lint",
+    "build": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:coinsop/bittrex-wrapper.git"
+  },
+  "keywords": [
+    "bittrex"
+  ],
+  "author": "Coinsop",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "eslint": "^3.14.1",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-depcheck": "^1.2.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-rimraf": "^0.2.1",
+    "isparta": "^4.0.0",
+    "mocha": "^3.2.0"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run lint && npm test && npm run build"
+    }
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2"
+    ],
+    "plugins": [
+      "add-module-exports"
+    ]
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "winston": "^2.3.1"
+  }
+}
