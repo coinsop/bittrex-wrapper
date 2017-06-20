@@ -1,4 +1,5 @@
 import http from 'http';
+import https from 'https';
 
 /**
  * Checks if str is a valid JSON string
@@ -18,6 +19,7 @@ const isJson = (str) => {
 /**
  * Makes an http request
  *
+ * @param {String} opts.protocol HTTP or HTTPS
  * @param {Object} opts Request connection options
  * @param {String} opts.method HTTP verb or method
  * @param {String} opts.host Host address
@@ -27,10 +29,11 @@ const isJson = (str) => {
  * @param {Object} data Object to send
  * @returns Promise
  */
-const request = (opts, data) =>
+const request = (protocol, opts, data) =>
   new Promise((resolve, reject) => {
     try {
-      const req = http.request(opts, (res) => {
+      const _protocol = protocol.toUpperCase() && protocol.toUpperCase() === 'HTTPS' ? https : http;
+      const req = _protocol.request(opts, (res) => {
         let str = '';
         res.on('data', (chunk) => {
           str += chunk;
