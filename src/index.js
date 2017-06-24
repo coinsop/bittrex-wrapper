@@ -1,3 +1,6 @@
-import logger from './helpers/logger';
+import Bittrex from './wrappers/Bittrex';
 
-logger.log('info', 'Hello World');
+/**
+ * Exports main module class
+ */
+export default Bittrex;
