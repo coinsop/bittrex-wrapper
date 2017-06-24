@@ -6,6 +6,7 @@
   "scripts": {
     "test": "babel-node ./node_modules/.bin/isparta cover _mocha",
     "lint": "gulp lint",
+    "start": "gulp start",
     "build": "gulp build"
   },
   "repository": {
@@ -22,8 +23,10 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-stage-2": "^6.22.0",
+    "chai": "^4.0.2",
+    "dotenv": "^4.0.0",
     "eslint": "^3.14.1",
-    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-config-airbnb-base": "^11.2.0",
     "eslint-plugin-import": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
