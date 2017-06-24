@@ -19,5 +19,17 @@ describe('### Make bittrex API requets', () => {
         done(err);
       });
     });
+    it('Should request publicGetCurrencies path', (done) => {
+      bittrex.publicGetCurrencies().then((res) => {
+        console.log(res);
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('array');
+        expect(res.result.length).to.be.above(0);
+        done();
+      }).catch((err) => {
+        // console.log(err);
+        done(err);
+      });
+    });
   });
 });
