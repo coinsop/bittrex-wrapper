@@ -16,6 +16,13 @@ const isJson = (str) => {
   return true;
 };
 
+
+/**
+ * Checks if a object attribute is valid for an url
+ *
+ * @param {any} param Attribute to check
+ * @returns Boolean
+ */
 const isValidType = (param) => {
   switch (typeof param) {
     case 'string':
