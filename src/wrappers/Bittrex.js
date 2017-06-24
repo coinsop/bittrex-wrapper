@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import request from '../helpers/request';
+import { request, objectToQueryString } from '../helpers/request';
 
 class Bittrex {
   /**
@@ -31,23 +31,24 @@ class Bittrex {
    * @memberof Bittrex
    */
   constructor(apiKey, apiSecret, apiProtocol = 'https', apiHost = 'bittrex.com', apiVersion = 'v1.1') {
+    if (!apiKey) {
+      throw new Error('API key is required');
+    }
+    if (!apiSecret) {
+      throw new Error('API secret is required');
+    }
     this.__apiProtocol = apiProtocol;
     this.__apiHost = apiHost;
     this.__apiVersion = apiVersion;
     this.__apiKey = apiKey;
     this.__apiSecret = apiSecret;
-  }
-
-  /**
-   * Completes path for request
-   *
-   * @param {string} req - Main path for request
-   * @returns {string} path
-   *
-   * @memberof Bittrex
-   */
-  getPath(req) {
-    return `${req}?apikey=${this.__apiKey}&nonce=${new Date().getTime()}`;
+    this.PUBLIC_GET_MARKETS = '/public/getmarkets';
+    this.PUBLIC_GET_CURRENCIES = '/public/getcurrencies';
+    this.PUBLIC_GET_TICKER = '/public/getticker';
+    this.PUBLIC_GET_MARKET_SUMMARIES = '/public/getmarketsummaries';
+    this.PUBLIC_GET_MARKET_SUMMARY = '/public/getmarketsummary';
+    this.PUBLIC_GET_ORDER_BOOK = '/public/getorderbook';
+    this.PUBLIC_GET_MARKET_HISTORY = '/public/getmarkethistory';
   }
 
   /**
@@ -67,68 +68,120 @@ class Bittrex {
   /**
    * Makes direct http request to API
    *
-   * @param {string} req - Main path for request
+   * @param {String} path - Main path for request
+   * @param {Object} data - Data to send in the request
    * @returns {promise} server response
    *
    * @memberof Bittrex
    */
-  doRequest(req) {
+  doRequest(path, data) {
     return new Promise((resolve, reject) => {
-      const _path = `/api/${this.__apiVersion}${this.getPath(req)}`;
-      const _url = `${this.__apiProtocol}://${this.__apiHost}${_path}`;
+      const _data = Object.assign(data || {}, {
+        nonce: new Date().getTime(),
+        apikey: this.__apiKey
+      });
+      const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}${objectToQueryString(_data)}`;
       const apisign = this.getApiSign(_url);
       request(this.__apiProtocol, {
         method: 'GET',
         host: this.__apiHost,
-        path: `/api/${this.__apiVersion}${this.getPath(req)}`,
+        path: `/api/${this.__apiVersion}${path}`,
         headers: {
           apisign
         }
-      }).then(res => resolve(res)).catch(err => reject(err));
+      }, _data).then(res => resolve(res)).catch(err => reject(err));
     });
   }
 
   /**
-   * Public Api
-   * /public/getmarkets
-   * Used to get the open and available trading markets at Bittrex along with other meta data.
+   * Used to get the open and available trading markets at Bittrex along with other meta data
    *
-   * /public/getcurrencies
-   * Used to get all supported currencies at Bittrex along with other meta data.
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  publicGetMarkets() {
+    return this.doRequest(this.PUBLIC_GET_MARKETS);
+  }
+
+  /**
+   * Used to get all supported currencies at Bittrex along with other meta data
    *
-   * /public/getticker
-   * Used to get the current tick values for a market.
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  publicGetCurrencies() {
+    return this.doRequest(this.PUBLIC_GET_CURRENCIES);
+  }
+
+  /**
+   * Used to get the current tick values for a market
    *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   *
-   * /public/getmarketsummaries
+   * @param {String} market - required a string literal for the market (ex: BTC-LTC)
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  publicGetTicker(market) {
+    if (!market) {
+      throw new Error('Market is required');
+    }
+    return this.doRequest(this.PUBLIC_GET_TICKER, { market });
+  }
+
+  /**
    * Used to get the last 24 hour summary of all active exchanges
    *
-   * /public/getmarketsummary
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  publicGetMarketSummaries() {
+    return this.doRequest(this.PUBLIC_GET_MARKET_SUMMARIES);
+  }
+
+  /**
    * Used to get the last 24 hour summary of all active exchanges
    *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   *
-   * /public/getorderbook
+   * @param {String} market - required a string literal for the market (ex: BTC-LTC)
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  publicGetMarketSummary(market) {
+    if (!market) {
+      throw new Error('Market is required');
+    }
+    return this.doRequest(this.PUBLIC_GET_MARKET_SUMMARY, { market });
+  }
+
+  /**
    * Used to get retrieve the orderbook for a given market
    *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   * type required buy, sell or both to identify the type of orderbook to return.
-   * depth optional defaults to 20 - how deep of an order book to retrieve. Max is 50
+   * @param {String} market - required a string literal for the market (ex: BTC-LTC)
+   * @param {String} [type='both'] - required buy, sell or both type of orderbook to return
+   * @param {Number} [depth=20] - optional defaults to 20 - Max is 50
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  publicGetOrderBook(market, type = 'both', depth = 20) {
+    if (!market) {
+      throw new Error('Market is required');
+    }
+    return this.doRequest(this.PUBLIC_GET_ORDER_BOOK, { market, type, depth });
+  }
+
+  /**
+   * Used to retrieve the latest trades that have occured for a specific market
    *
-   * /public/getmarkethistory
-   * Used to retrieve the latest trades that have occured for a specific market.
-   *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   *
+   * @param {String} market - market required a string literal for the market (ex: BTC-LTC)
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  publicGetMarketHistory(market) {
+    if (!market) {
+      throw new Error('Market is required');
+    }
+    return this.doRequest(this.PUBLIC_GET_MARKET_HISTORY, { market });
+  }
+
+  /**
    * Market Apis
    * /market/buylimit
    * Used to place a buy order in a specific market.

@@ -7,7 +7,7 @@ import https from 'https';
  * @param {String} str Input string that should be a valid JSON
  * @returns Boolean
  */
-const isJson = (str) => {
+export const isJson = (str) => {
   try {
     JSON.parse(str);
   } catch (e) {
@@ -23,7 +23,7 @@ const isJson = (str) => {
  * @param {any} param Attribute to check
  * @returns Boolean
  */
-const isValidType = (param) => {
+export const isValidType = (param) => {
   switch (typeof param) {
     case 'string':
       return true;
@@ -42,7 +42,7 @@ const isValidType = (param) => {
  * @param {Object} obj object to parse
  * @returns String
  */
-const objectToQueryString = (obj) => {
+export const objectToQueryString = (obj) => {
   const strArray = Object.keys(obj).map((key) => {
     if (isValidType(obj[key])) {
       return `${key}=${obj[key].toString()}`;
@@ -65,7 +65,7 @@ const objectToQueryString = (obj) => {
  * @param {Object} data Object to send
  * @returns Promise
  */
-const request = (protocol, opts, data) =>
+export const request = (protocol, opts, data) =>
   new Promise((resolve, reject) => {
     try {
       const _protocol = protocol.toUpperCase() && protocol.toUpperCase() === 'HTTPS' ? https : http;
@@ -93,5 +93,3 @@ const request = (protocol, opts, data) =>
       reject(err);
     }
   });
-
-export default request;
