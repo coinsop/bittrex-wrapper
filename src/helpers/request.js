@@ -16,6 +16,35 @@ const isJson = (str) => {
   return true;
 };
 
+const isValidType = (param) => {
+  switch (typeof param) {
+    case 'string':
+      return true;
+    case 'number':
+      return true;
+    case 'boolean':
+      return true;
+    default:
+      return false;
+  }
+};
+
+/**
+ * Parses an object to a query string url format
+ *
+ * @param {Object} obj object to parse
+ * @returns String
+ */
+const objectToQueryString = (obj) => {
+  const strArray = Object.keys(obj).map((key) => {
+    if (isValidType(obj[key])) {
+      return `${key}=${obj[key].toString()}`;
+    }
+    return null;
+  });
+  return strArray.length ? `?${strArray.filter(pair => pair !== null).join('&')}` : '';
+};
+
 /**
  * Makes an http request
  *
@@ -33,7 +62,11 @@ const request = (protocol, opts, data) =>
   new Promise((resolve, reject) => {
     try {
       const _protocol = protocol.toUpperCase() && protocol.toUpperCase() === 'HTTPS' ? https : http;
-      const req = _protocol.request(opts, (res) => {
+      let _opts = JSON.parse(JSON.stringify(opts));
+      if (_opts.method.toUpperCase() === 'GET' && data) {
+        _opts = Object.assign({}, _opts, { path: `${_opts.path}${objectToQueryString(data)}` });
+      }
+      const req = _protocol.request(_opts, (res) => {
         let str = '';
         res.on('data', (chunk) => {
           str += chunk;
@@ -45,7 +78,7 @@ const request = (protocol, opts, data) =>
           reject(e);
         });
       });
-      if ((opts.method.toUpperCase() === 'PUT' || opts.method.toUpperCase() === 'POST') && data) {
+      if ((_opts.method.toUpperCase() === 'PUT' || _opts.method.toUpperCase() === 'POST') && data) {
         req.write(JSON.stringify(data));
       }
       req.end();
