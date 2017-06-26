@@ -93,7 +93,6 @@ class Bittrex {
         apikey: this.__apiKey
       });
       const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}?${querystring.stringify(_data)}`;
-      console.log(_url);
       const apisign = this.getApiSign(_url);
       request({
         method: 'GET',
