@@ -3,6 +3,8 @@ import Bittrex from '../src/wrappers/Bittrex';
 
 require('dotenv').config();
 
+const TIMEOUT = 5000;
+
 const market = 'BTC-DGB';
 const currency = 'BTC';
 const quantityBuy = '1000';
@@ -24,7 +26,7 @@ describe('### Make bittrex API requets', () => {
         // console.log(err);
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request publicGetCurrencies path', (done) => {
       bittrex.publicGetCurrencies().then((res) => {
         expect(res.success).to.be.equal(true);
@@ -35,7 +37,7 @@ describe('### Make bittrex API requets', () => {
         // console.log(err);
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request publicGetTicker path', (done) => {
       bittrex.publicGetTicker(market).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -48,7 +50,7 @@ describe('### Make bittrex API requets', () => {
         // console.log(err);
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request publicGetMarketSummaries path', (done) => {
       bittrex.publicGetMarketSummaries().then((res) => {
         expect(res.success).to.be.equal(true);
@@ -58,7 +60,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request publicGetMarketSummary path', (done) => {
       bittrex.publicGetMarketSummary(market).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -68,7 +70,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request publicGetOrderBook path', (done) => {
       bittrex.publicGetOrderBook(market).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -81,7 +83,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request publicGetMarketHistory path', (done) => {
       bittrex.publicGetMarketHistory(market).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -91,7 +93,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
   });
   describe('## Market API', () => {
     it('Should request marketBuyLimit and marketCancel paths', (done) => {
@@ -108,7 +110,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request marketSellLimit and marketCancel paths', (done) => {
       bittrex.marketSellLimit(market, quantitySell, rateSell).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -123,7 +125,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request marketGetOpenOrders path', (done) => {
       bittrex.marketGetOpenOrders(market).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -132,7 +134,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
   });
   describe('## Account API', () => {
     it('Should request accountGetBalances path', (done) => {
@@ -143,7 +145,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request accountGetBalance path', (done) => {
       bittrex.accountGetBalance(currency).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -152,7 +154,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request accountGetDepositAddress path', (done) => {
       bittrex.accountGetDepositAddress(currency).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -161,7 +163,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request marketSellLimit and accountGetOrder paths', (done) => {
       bittrex.marketSellLimit(market, quantitySell, rateSell).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -170,14 +172,19 @@ describe('### Make bittrex API requets', () => {
         bittrex.accountGetOrder(res.result.uuid).then((_res) => {
           expect(_res.success).to.be.equal(true);
           expect(res.result).to.be.an('object');
-          done();
+          bittrex.marketCancel(res.result.uuid).then((__res) => {
+            expect(__res.success).to.be.equal(true);
+            done();
+          }).catch((err) => {
+            done(err);
+          });
         }).catch((err) => {
           done(err);
         });
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request accountGetOrderHistory path', (done) => {
       bittrex.accountGetOrderHistory(market).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -186,7 +193,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request accountGetWithdrawalHistory path', (done) => {
       bittrex.accountGetWithdrawalHistory(currency).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -195,7 +202,7 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
     it('Should request accountGetDepositHistory path', (done) => {
       bittrex.accountGetDepositHistory(currency).then((res) => {
         expect(res.success).to.be.equal(true);
@@ -204,6 +211,6 @@ describe('### Make bittrex API requets', () => {
       }).catch((err) => {
         done(err);
       });
-    });
+    }).timeout(TIMEOUT);
   });
 });
