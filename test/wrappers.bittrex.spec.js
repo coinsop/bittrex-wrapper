@@ -4,9 +4,11 @@ import Bittrex from '../src/wrappers/Bittrex';
 require('dotenv').config();
 
 const market = 'BTC-DGB';
-const quantity = '1000';
-const rate = '0.000008';
-const bittrex = new Bittrex(process.env.BITTREX_API_KEY, process.env.BITTREX_API_KEY);
+const quantityBuy = '1000';
+const rateBuy = '0.000008';
+const quantitySell = '1000';
+const rateSell = '0.1';
+const bittrex = new Bittrex(process.env.BITTREX_API_KEY, process.env.BITTREX_API_SECRET);
 
 describe('### Make bittrex API requets', () => {
   describe('## Public API', () => {
@@ -92,8 +94,39 @@ describe('### Make bittrex API requets', () => {
   });
   describe('## Market API', () => {
     it('Should request marketBuyLimit path', (done) => {
-      bittrex.marketBuyLimit(market, quantity, rate).then((res) => {
-        console.log(res);
+      bittrex.marketBuyLimit(market, quantityBuy, rateBuy).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('object');
+        expect(res.result.uuid).to.be.a('string');
+        bittrex.marketCancel(res.result.uuid).then((_res) => {
+          expect(_res.success).to.be.equal(true);
+          done();
+        }).catch((err) => {
+          done(err);
+        });
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request marketSellLimit path', (done) => {
+      bittrex.marketSellLimit(market, quantitySell, rateSell).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('object');
+        expect(res.result.uuid).to.be.a('string');
+        bittrex.marketCancel(res.result.uuid).then((_res) => {
+          expect(_res.success).to.be.equal(true);
+          done();
+        }).catch((err) => {
+          done(err);
+        });
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request marketGetOpenOrders path', (done) => {
+      bittrex.marketGetOpenOrders(market).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('array');
         done();
       }).catch((err) => {
         done(err);

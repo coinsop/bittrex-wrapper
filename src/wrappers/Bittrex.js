@@ -1,4 +1,4 @@
-import CryptoJS from 'crypto-js';
+import crypto from 'crypto';
 import querystring from 'querystring';
 import request from '../helpers/request';
 
@@ -68,8 +68,9 @@ class Bittrex {
    * @memberof Bittrex
    */
   getApiSign(uri) {
-    const hash = CryptoJS.HmacSHA512(uri, this.__apiSecret);
-    return hash.toString();
+    const hmac = crypto.createHmac('sha512', this.__apiSecret);
+    const signed = hmac.update(new Buffer(uri, 'utf-8')).digest('hex');
+    return signed;
   }
 
   getNonce() {
