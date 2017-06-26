@@ -4,7 +4,6 @@ import path from 'path';
 import eslint from 'gulp-eslint';
 import babel from 'gulp-babel';
 import rimraf from 'gulp-rimraf';
-import nodemon from 'gulp-nodemon';
 import depcheck from 'gulp-depcheck';
 
 const getSrcFolders = srcpath =>
@@ -58,18 +57,4 @@ gulp.task('build', ['copy', 'depcheck'], () => {
 // watch files changes
 gulp.task('watch', () => {
   gulp.watch(allFiles, ['lint']);
-});
-
-// run main script with watch on src files
-gulp.task('start', ['build'], () => {
-  nodemon({
-    tasks: ['build'],
-    script: 'dist/index.js',
-    ext: 'js html json',
-    watch: [...allFiles],
-    ignore: ['test/**/*'],
-    env: {
-      NODE_ENV: 'development'
-    }
-  });
 });
