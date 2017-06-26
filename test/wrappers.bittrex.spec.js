@@ -4,6 +4,7 @@ import Bittrex from '../src/wrappers/Bittrex';
 require('dotenv').config();
 
 const market = 'BTC-DGB';
+const currency = 'BTC';
 const quantityBuy = '1000';
 const rateBuy = '0.000008';
 const quantitySell = '1000';
@@ -93,7 +94,7 @@ describe('### Make bittrex API requets', () => {
     });
   });
   describe('## Market API', () => {
-    it('Should request marketBuyLimit path', (done) => {
+    it('Should request marketBuyLimit and marketCancel paths', (done) => {
       bittrex.marketBuyLimit(market, quantityBuy, rateBuy).then((res) => {
         expect(res.success).to.be.equal(true);
         expect(res.result).to.be.an('object');
@@ -108,7 +109,7 @@ describe('### Make bittrex API requets', () => {
         done(err);
       });
     });
-    it('Should request marketSellLimit path', (done) => {
+    it('Should request marketSellLimit and marketCancel paths', (done) => {
       bittrex.marketSellLimit(market, quantitySell, rateSell).then((res) => {
         expect(res.success).to.be.equal(true);
         expect(res.result).to.be.an('object');
@@ -125,6 +126,78 @@ describe('### Make bittrex API requets', () => {
     });
     it('Should request marketGetOpenOrders path', (done) => {
       bittrex.marketGetOpenOrders(market).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('array');
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+  });
+  describe('## Account API', () => {
+    it('Should request accountGetBalances path', (done) => {
+      bittrex.accountGetBalances().then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('array');
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request accountGetBalance path', (done) => {
+      bittrex.accountGetBalance(currency).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('object');
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request accountGetDepositAddress path', (done) => {
+      bittrex.accountGetDepositAddress(currency).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('object');
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request marketSellLimit and accountGetOrder paths', (done) => {
+      bittrex.marketSellLimit(market, quantitySell, rateSell).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('object');
+        expect(res.result.uuid).to.be.a('string');
+        bittrex.accountGetOrder(res.result.uuid).then((_res) => {
+          expect(_res.success).to.be.equal(true);
+          expect(res.result).to.be.an('object');
+          done();
+        }).catch((err) => {
+          done(err);
+        });
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request accountGetOrderHistory path', (done) => {
+      bittrex.accountGetOrderHistory(market).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('array');
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request accountGetWithdrawalHistory path', (done) => {
+      bittrex.accountGetWithdrawalHistory(currency).then((res) => {
+        expect(res.success).to.be.equal(true);
+        expect(res.result).to.be.an('array');
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+    it('Should request accountGetDepositHistory path', (done) => {
+      bittrex.accountGetDepositHistory(currency).then((res) => {
         expect(res.success).to.be.equal(true);
         expect(res.result).to.be.an('array');
         done();

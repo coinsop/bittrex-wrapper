@@ -32,7 +32,6 @@
     "gulp-babel": "^6.1.2",
     "gulp-depcheck": "^1.2.0",
     "gulp-eslint": "^3.0.1",
-    "gulp-nodemon": "^2.2.1",
     "gulp-rimraf": "^0.2.1",
     "isparta": "^4.0.0",
     "mocha": "^3.2.0"
@@ -52,7 +51,6 @@
     ]
   },
   "dependencies": {
-    "lodash": "^4.17.4",
     "winston": "^2.3.1"
   }
 }
