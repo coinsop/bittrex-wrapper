@@ -57,6 +57,15 @@ class Bittrex {
     this.MARKET_SELL_LIMIT = '/market/selllimit';
     this.MARKET_CANCEL = '/market/cancel';
     this.MARKET_GET_OPEN_ORDERS = '/market/getopenorders';
+    // Account API
+    this.ACCOUNT_GET_BALANCES = '/account/getbalances';
+    this.ACCOUNT_GET_BALANCE = '/account/getbalance';
+    this.ACCOUNT_GET_DEPOSIT_ADDRESS = '/account/getdepositaddress';
+    this.ACCOUNT_WITHDRAW = '/account/withdraw';
+    this.ACCOUNT_GET_ORDER = '/account/getorder';
+    this.ACCOUNT_GET_ORDER_HISTORY = '/account/getorderhistory';
+    this.ACCOUNT_GET_WITHDRAWAL_HISTORY = '/account/getwithdrawalhistory';
+    this.ACCOUNT_GET_DEPOSIT_HISTORY = '/account/getdeposithistory';
   }
 
   /**
@@ -279,77 +288,113 @@ class Bittrex {
    */
 
   /**
-   *
-   * Account Api
-   * /account/getbalances
    * Used to retrieve all balances from your account
    *
-   * Parameters
-   * None
+   * @returns Promise
+   * @memberof Bittrex
    */
-   /*
-   * /account/getbalance
-   * Used to retrieve the balance from your account for a specific currency.
+  accountGetBalances() {
+    return this.doRequest(this.ACCOUNT_GET_BALANCES);
+  }
+
+  /**
+   * Used to retrieve the balance from your account for a specific currency
    *
-   * Parameters
-   * parameter required description
-   * currency required a string literal for the currency (ex: LTC)
+   * @param {String} currency - required a string literal for the currency (ex: LTC)
+   * @returns Promise
+   * @memberof Bittrex
    */
-  /*
-   * /account/getdepositaddress
-   * Used to retrieve or generate an address for a specific currency.
-   * If one does not exist, the call will fail and return ADDRESS_GENERATING until one is available.
+  accountGetBalance(currency) {
+    if (!currency) {
+      throw new Error('Currency is required');
+    }
+    return this.doRequest(this.ACCOUNT_GET_BALANCE, { currency });
+  }
+
+  /**
+   * Used to retrieve or generate an address for a specific currency
+   * If one does not exist, the call will fail and return ADDRESS_GENERATING until one is available
    *
-   * Parameters
-   * parameter required description
-   * currency required a string literal for the currency (ie. BTC)
+   * @param {String} currency - required a string literal for the currency (ie. BTC)
+   * @returns Promise
+   * @memberof Bittrex
    */
-  /*
-   * /account/withdraw
+  accountGetDepositAddress(currency) {
+    if (!currency) {
+      throw new Error('Currency is required');
+    }
+    return this.doRequest(this.ACCOUNT_GET_DEPOSIT_ADDRESS, { currency });
+  }
+
+  /**
    * Used to withdraw funds from your account. note: please account for txfee.
    *
-   * Parameters
-   * parameter required description
-   * currency required a string literal for the currency (ie. BTC)
-   * quantity required the quantity of coins to withdraw
-   * address required the address where to send the funds.
-   * paymentid optional used for CryptoNotes/BitShareX/Nxt optional field (memo/paymentid)
+   * @param {String} currency - required a string literal for the currency (ie. BTC)
+   * @param {String} quantity - required the quantity of coins to withdraw
+   * @param {String} address - required the address where to send the funds.
+   * @param {String} paymentid - optional used for CryptoNotes/BitShareX/Nxt
+   * @returns Promise
+   * @memberof Bittrex
    */
-  /*
-   * /account/getorder
+  accountWithdraw(currency, quantity, address, paymentid = null) {
+    if (!currency) {
+      throw new Error('Currency is required');
+    }
+    if (!quantity) {
+      throw new Error('Quantity is required');
+    }
+    if (!address) {
+      throw new Error('Address is required');
+    }
+    return this.doRequest(this.ACCOUNT_WITHDRAW, { currency, quantity, address, paymentid });
+  }
+
+  /**
    * Used to retrieve a single order by uuid.
    *
-   * Parameters
-   * parameter required description
-   * uuid required the uuid of the buy or sell order
+   * @param {String} uuid - required the uuid of the buy or sell order
+   * @returns Promise
+   * @memberof Bittrex
    */
-  /*
-   * /account/getorderhistory
+  accountGetOrder(uuid) {
+    if (!uuid) {
+      throw new Error('UUID is required');
+    }
+    return this.doRequest(this.ACCOUNT_GET_ORDER, { uuid });
+  }
+
+  /**
    * Used to retrieve your order history.
    *
-   * Parameters
-   * parameter required description
-   * market optional a string literal for the market (ie. BTC-LTC).
-   * If ommited, will return for all markets
+   * @param {String} market - optional a string literal for the market (ie. BTC-LTC).
+   * @returns Promise
+   * @memberof Bittrex
    */
-  /*
-   * /account/getwithdrawalhistory
+  accountGetOrderHistory(market) {
+    return this.doRequest(this.ACCOUNT_GET_ORDER_HISTORY, { market });
+  }
+
+  /**
    * Used to retrieve your withdrawal history.
    *
-   * Parameters
-   * parameter required description
-   * currency optional a string literal for the currecy (ie. BTC).
-   * If omitted, will return for all currencies
+   * @param {String} currency - optional a string literal for the currecy (ie. BTC)
+   * @returns Promise
+   * @memberof Bittrex
    */
-  /*
-   * /account/getdeposithistory
+  accountGetWithdrawalHistory(currency) {
+    return this.doRequest(this.ACCOUNT_GET_WITHDRAWAL_HISTORY, { currency });
+  }
+
+  /**
    * Used to retrieve your deposit history.
    *
-   * Parameters
-   * parameter required description
-   * currency optional a string literal for the currecy (ie. BTC).
-   * If omitted, will return for all currencies
+   * @param {String} currency - optional a string literal for the currecy (ie. BTC).
+   * @returns Promise
+   * @memberof Bittrex
    */
+  accountGetDepositHistory(currency) {
+    return this.doRequest(this.ACCOUNT_GET_DEPOSIT_HISTORY, { currency });
+  }
 }
 
 export default Bittrex;
