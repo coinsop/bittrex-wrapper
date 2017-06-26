@@ -3,7 +3,9 @@ import Bittrex from '../src/wrappers/Bittrex';
 
 require('dotenv').config();
 
-const market = 'BTC-LTC';
+const market = 'BTC-DGB';
+const quantity = '1000';
+const rate = '0.000008';
 const bittrex = new Bittrex(process.env.BITTREX_API_KEY, process.env.BITTREX_API_KEY);
 
 describe('### Make bittrex API requets', () => {
@@ -82,6 +84,16 @@ describe('### Make bittrex API requets', () => {
         expect(res.success).to.be.equal(true);
         expect(res.result).to.be.an('array');
         expect(res.result.length).to.be.above(0);
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+  });
+  describe('## Market API', () => {
+    it('Should request marketBuyLimit path', (done) => {
+      bittrex.marketBuyLimit(market, quantity, rate).then((res) => {
+        console.log(res);
         done();
       }).catch((err) => {
         done(err);

@@ -35,6 +35,8 @@ const request = (opts, data = null) =>
       let _opts = JSON.parse(JSON.stringify(opts));
       if (_opts.method.toUpperCase() === 'GET' && data) {
         _opts = Object.assign({}, _opts, { path: `${_opts.path}?${querystring.stringify(data)}` });
+        console.log(_opts.path);
+        console.log(_opts.headers.apisign);
       }
       const req = https.request(_opts, (res) => {
         let str = '';
