@@ -1,5 +1,6 @@
 import crypto from 'crypto';
-import { request, objectToQueryString } from '../helpers/request';
+import querystring from 'querystring';
+import request from '../helpers/request';
 
 class Bittrex {
   /**
@@ -37,11 +38,13 @@ class Bittrex {
     if (!apiSecret) {
       throw new Error('API secret is required');
     }
+    this.__lastNonce = null;
     this.__apiProtocol = apiProtocol;
     this.__apiHost = apiHost;
     this.__apiVersion = apiVersion;
     this.__apiKey = apiKey;
     this.__apiSecret = apiSecret;
+    // Public API endpoints
     this.PUBLIC_GET_MARKETS = '/public/getmarkets';
     this.PUBLIC_GET_CURRENCIES = '/public/getcurrencies';
     this.PUBLIC_GET_TICKER = '/public/getticker';
@@ -49,6 +52,11 @@ class Bittrex {
     this.PUBLIC_GET_MARKET_SUMMARY = '/public/getmarketsummary';
     this.PUBLIC_GET_ORDER_BOOK = '/public/getorderbook';
     this.PUBLIC_GET_MARKET_HISTORY = '/public/getmarkethistory';
+    // Market API endpoits
+    this.MARKET_BUY_LIMIT = '/market/buylimit';
+    this.MARKET_SELL_LIMIT = '/market/selllimit';
+    this.MARKET_CANCEL = '/market/cancel';
+    this.MARKET_GET_OPEN_ORDERS = '/market/getopenorders';
   }
 
   /**
@@ -61,8 +69,13 @@ class Bittrex {
    */
   getApiSign(uri) {
     const hmac = crypto.createHmac('sha512', this.__apiSecret);
-    hmac.update(uri);
-    return hmac.digest('hex');
+    const signed = hmac.update(new Buffer(uri, 'utf-8')).digest('hex');
+    return signed;
+  }
+
+  getNonce() {
+    this.__lastNonce = Math.floor(new Date().getTime() / 1000);
+    return this.__lastNonce;
   }
 
   /**
@@ -77,12 +90,12 @@ class Bittrex {
   doRequest(path, data) {
     return new Promise((resolve, reject) => {
       const _data = Object.assign(data || {}, {
-        nonce: new Date().getTime(),
+        nonce: this.getNonce(),
         apikey: this.__apiKey
       });
-      const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}${objectToQueryString(_data)}`;
+      const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}?${querystring.stringify(_data)}`;
       const apisign = this.getApiSign(_url);
-      request(this.__apiProtocol, {
+      request({
         method: 'GET',
         host: this.__apiHost,
         path: `/api/${this.__apiVersion}${path}`,
@@ -92,6 +105,10 @@ class Bittrex {
       }, _data).then(res => resolve(res)).catch(err => reject(err));
     });
   }
+
+  /**
+   * Public API
+   */
 
   /**
    * Used to get the open and available trading markets at Bittrex along with other meta data
@@ -182,42 +199,86 @@ class Bittrex {
   }
 
   /**
-   * Market Apis
-   * /market/buylimit
-   * Used to place a buy order in a specific market.
-   * Use buylimit to place limit orders.
-   * Make sure you have the proper permissions set on your API keys for this call to work
+   * Market API
+   */
+
+  /**
+   * Used to place a buy order in a specific market
    *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   * quantity required the amount to purchase
-   * rate required the rate at which to place the order.
+   * @param {String} market - required a string literal for the market (ex: BTC-LTC)
+   * @param {String} quantity - required the amount to purchase
+   * @param {String} rate - required the rate at which to place the order
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  marketBuyLimit(market, quantity, rate) {
+    if (!market) {
+      throw new Error('Market is required');
+    }
+    if (!quantity) {
+      throw new Error('Quantity is required');
+    }
+    if (!rate) {
+      throw new Error('Rate is required');
+    }
+    return this.doRequest(this.MARKET_BUY_LIMIT, { market, quantity, rate });
+  }
+
+  /**
+   * Used to place an sell order in a specific market
    *
-   * /market/selllimit
-   * Used to place an sell order in a specific market.
-   * Use selllimit to place limit orders.
-   * Make sure you have the proper permissions set on your API keys for this call to work
+   * @param {String} market - required a string literal for the market (ex: BTC-LTC)
+   * @param {String} quantity - required the amount to purchase
+   * @param {String} rate - required the rate at which to place the order
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  marketSellLimit(market, quantity, rate) {
+    if (!market) {
+      throw new Error('Market is required');
+    }
+    if (!quantity) {
+      throw new Error('Quantity is required');
+    }
+    if (!rate) {
+      throw new Error('Rate is required');
+    }
+    return this.doRequest(this.MARKET_SELL_LIMIT, { market, quantity, rate });
+  }
+
+  /**
+   * Used to cancel a buy or sell order
    *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   * quantity required the amount to purchase
-   * rate required the rate at which to place the order
-   *
-   * /market/cancel
-   * Used to cancel a buy or sell order.
-   *
-   * Parameters
-   * parameter required description
-   * uuid required uuid of buy or sell order
-   *
-   * /market/getopenorders
+   * @param {String} uuid - required uuid of buy or sell order
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  marketCancel(uuid) {
+    if (!uuid) {
+      throw new Error('UUID is required');
+    }
+    return this.doRequest(this.MARKET_CANCEL, { uuid });
+  }
+
+  /**
    * Get all orders that you currently have opened. A specific market can be requested
-   * Parameters
-   * parameter required description
-   * market optional a string literal for the market (ie. BTC-LTC)
    *
+   * @param {String} market - optional a string literal for the market (ie. BTC-LTC)
+   * @returns Promise
+   * @memberof Bittrex
+   */
+  marketGetOpenOrders(market) {
+    if (!market) {
+      throw new Error('Market is required');
+    }
+    return this.doRequest(this.MARKET_GET_OPEN_ORDERS, { market });
+  }
+
+  /**
+   * Account API
+   */
+
+  /**
    *
    * Account Api
    * /account/getbalances
@@ -225,15 +286,16 @@ class Bittrex {
    *
    * Parameters
    * None
-   *
-   *
+   */
+   /*
    * /account/getbalance
    * Used to retrieve the balance from your account for a specific currency.
    *
    * Parameters
    * parameter required description
    * currency required a string literal for the currency (ex: LTC)
-   *
+   */
+  /*
    * /account/getdepositaddress
    * Used to retrieve or generate an address for a specific currency.
    * If one does not exist, the call will fail and return ADDRESS_GENERATING until one is available.
@@ -241,7 +303,8 @@ class Bittrex {
    * Parameters
    * parameter required description
    * currency required a string literal for the currency (ie. BTC)
-   *
+   */
+  /*
    * /account/withdraw
    * Used to withdraw funds from your account. note: please account for txfee.
    *
@@ -251,14 +314,16 @@ class Bittrex {
    * quantity required the quantity of coins to withdraw
    * address required the address where to send the funds.
    * paymentid optional used for CryptoNotes/BitShareX/Nxt optional field (memo/paymentid)
-   *
+   */
+  /*
    * /account/getorder
    * Used to retrieve a single order by uuid.
    *
    * Parameters
    * parameter required description
    * uuid required the uuid of the buy or sell order
-   *
+   */
+  /*
    * /account/getorderhistory
    * Used to retrieve your order history.
    *
@@ -266,7 +331,8 @@ class Bittrex {
    * parameter required description
    * market optional a string literal for the market (ie. BTC-LTC).
    * If ommited, will return for all markets
-   *
+   */
+  /*
    * /account/getwithdrawalhistory
    * Used to retrieve your withdrawal history.
    *
@@ -274,7 +340,8 @@ class Bittrex {
    * parameter required description
    * currency optional a string literal for the currecy (ie. BTC).
    * If omitted, will return for all currencies
-   *
+   */
+  /*
    * /account/getdeposithistory
    * Used to retrieve your deposit history.
    *
