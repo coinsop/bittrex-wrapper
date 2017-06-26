@@ -107,6 +107,10 @@ class Bittrex {
   }
 
   /**
+   * Public API
+   */
+
+  /**
    * Used to get the open and available trading markets at Bittrex along with other meta data
    *
    * @returns Promise
@@ -195,17 +199,17 @@ class Bittrex {
   }
 
   /**
-   * Market Apis
-   * /market/buylimit
-   * Used to place a buy order in a specific market.
-   * Use buylimit to place limit orders.
-   * Make sure you have the proper permissions set on your API keys for this call to work
+   * Market API
+   */
+
+  /**
+   * Used to place a buy order in a specific market
    *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   * quantity required the amount to purchase
-   * rate required the rate at which to place the order.
+   * @param {String} market - required a string literal for the market (ex: BTC-LTC)
+   * @param {String} quantity - required the amount to purchase
+   * @param {String} rate - required the rate at which to place the order
+   * @returns Promise
+   * @memberof Bittrex
    */
   marketBuyLimit(market, quantity, rate) {
     if (!market) {
@@ -221,16 +225,13 @@ class Bittrex {
   }
 
   /**
-   * /market/selllimit
-   * Used to place an sell order in a specific market.
-   * Use selllimit to place limit orders.
-   * Make sure you have the proper permissions set on your API keys for this call to work
+   * Used to place an sell order in a specific market
    *
-   * Parameters
-   * parameter required description
-   * market required a string literal for the market (ex: BTC-LTC)
-   * quantity required the amount to purchase
-   * rate required the rate at which to place the order
+   * @param {String} market - required a string literal for the market (ex: BTC-LTC)
+   * @param {String} quantity - required the amount to purchase
+   * @param {String} rate - required the rate at which to place the order
+   * @returns Promise
+   * @memberof Bittrex
    */
   marketSellLimit(market, quantity, rate) {
     if (!market) {
@@ -246,12 +247,11 @@ class Bittrex {
   }
 
   /**
-   * /market/cancel
-   * Used to cancel a buy or sell order.
+   * Used to cancel a buy or sell order
    *
-   * Parameters
-   * parameter required description
-   * uuid required uuid of buy or sell order
+   * @param {String} uuid - required uuid of buy or sell order
+   * @returns Promise
+   * @memberof Bittrex
    */
   marketCancel(uuid) {
     if (!uuid) {
@@ -261,11 +261,11 @@ class Bittrex {
   }
 
   /**
-   * /market/getopenorders
    * Get all orders that you currently have opened. A specific market can be requested
-   * Parameters
-   * parameter required description
-   * market optional a string literal for the market (ie. BTC-LTC)
+   *
+   * @param {String} market - optional a string literal for the market (ie. BTC-LTC)
+   * @returns Promise
+   * @memberof Bittrex
    */
   marketGetOpenOrders(market) {
     if (!market) {
@@ -275,6 +275,10 @@ class Bittrex {
   }
 
   /**
+   * Account API
+   */
+
+  /**
    *
    * Account Api
    * /account/getbalances
@@ -282,15 +286,16 @@ class Bittrex {
    *
    * Parameters
    * None
-   *
-   *
+   */
+   /*
    * /account/getbalance
    * Used to retrieve the balance from your account for a specific currency.
    *
    * Parameters
    * parameter required description
    * currency required a string literal for the currency (ex: LTC)
-   *
+   */
+  /*
    * /account/getdepositaddress
    * Used to retrieve or generate an address for a specific currency.
    * If one does not exist, the call will fail and return ADDRESS_GENERATING until one is available.
@@ -298,7 +303,8 @@ class Bittrex {
    * Parameters
    * parameter required description
    * currency required a string literal for the currency (ie. BTC)
-   *
+   */
+  /*
    * /account/withdraw
    * Used to withdraw funds from your account. note: please account for txfee.
    *
@@ -308,14 +314,16 @@ class Bittrex {
    * quantity required the quantity of coins to withdraw
    * address required the address where to send the funds.
    * paymentid optional used for CryptoNotes/BitShareX/Nxt optional field (memo/paymentid)
-   *
+   */
+  /*
    * /account/getorder
    * Used to retrieve a single order by uuid.
    *
    * Parameters
    * parameter required description
    * uuid required the uuid of the buy or sell order
-   *
+   */
+  /*
    * /account/getorderhistory
    * Used to retrieve your order history.
    *
@@ -323,7 +331,8 @@ class Bittrex {
    * parameter required description
    * market optional a string literal for the market (ie. BTC-LTC).
    * If ommited, will return for all markets
-   *
+   */
+  /*
    * /account/getwithdrawalhistory
    * Used to retrieve your withdrawal history.
    *
@@ -331,7 +340,8 @@ class Bittrex {
    * parameter required description
    * currency optional a string literal for the currecy (ie. BTC).
    * If omitted, will return for all currencies
-   *
+   */
+  /*
    * /account/getdeposithistory
    * Used to retrieve your deposit history.
    *
