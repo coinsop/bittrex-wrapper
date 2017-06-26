@@ -1,5 +1,6 @@
 import crypto from 'crypto';
-import { request, objectToQueryString } from '../helpers/request';
+import querystring from 'querystring';
+import request from '../helpers/request';
 
 class Bittrex {
   /**
@@ -80,9 +81,9 @@ class Bittrex {
         nonce: new Date().getTime(),
         apikey: this.__apiKey
       });
-      const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}${objectToQueryString(_data)}`;
+      const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}?${querystring.stringify(_data)}`;
       const apisign = this.getApiSign(_url);
-      request(this.__apiProtocol, {
+      request({
         method: 'GET',
         host: this.__apiHost,
         path: `/api/${this.__apiVersion}${path}`,
