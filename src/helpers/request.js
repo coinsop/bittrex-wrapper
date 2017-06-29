@@ -49,7 +49,11 @@ const request = (opts, data = null) =>
         });
       });
       if ((_opts.method.toUpperCase() === 'PUT' || _opts.method.toUpperCase() === 'POST') && data) {
-        req.write(querystring.stringify(data));
+        if (_opts.headers && (_opts.headers['Content-Type'] === 'application/json' || _opts.headers['content-type'] === 'application/json')) {
+          req.write(JSON.stringify(data));
+        } else {
+          req.write(querystring.stringify(data));
+        }
       }
       req.end();
     } catch (err) {
