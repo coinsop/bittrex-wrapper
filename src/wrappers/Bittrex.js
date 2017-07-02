@@ -31,13 +31,7 @@ class Bittrex {
    *
    * @memberof Bittrex
    */
-  constructor(apiKey, apiSecret, apiProtocol = 'https', apiHost = 'bittrex.com', apiVersion = 'v1.1') {
-    if (!apiKey) {
-      throw new Error('API key is required');
-    }
-    if (!apiSecret) {
-      throw new Error('API secret is required');
-    }
+  constructor(apiKey = null, apiSecret = null, apiProtocol = 'https', apiHost = 'bittrex.com', apiVersion = 'v1.1') {
     this.__lastNonce = null;
     this.__apiProtocol = apiProtocol;
     this.__apiHost = apiHost;
@@ -98,19 +92,20 @@ class Bittrex {
    */
   doRequest(path, data) {
     return new Promise((resolve, reject) => {
-      const _data = Object.assign(data || {}, {
+      const _data = Object.assign(data || {}, this.__apiKey && this.__apiSecret ? {
         nonce: this.getNonce(),
         apikey: this.__apiKey
-      });
+      } : {});
       const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}?${querystring.stringify(_data)}`;
-      const apisign = this.getApiSign(_url);
+      const apisign = this.__apiKey && this.__apiSecret ? this.getApiSign(_url) : null;
       request({
         method: 'GET',
         host: this.__apiHost,
         path: `/api/${this.__apiVersion}${path}`,
-        headers: {
-          apisign
-        }
+        headers: apisign ? {
+          apisign,
+          'Content-Type': 'application/json'
+        } : { 'Content-Type': 'application/json' }
       }, _data).then(res => resolve(res)).catch(err => reject(err));
     });
   }
@@ -148,7 +143,7 @@ class Bittrex {
    */
   publicGetTicker(market) {
     if (!market) {
-      throw new Error('Market is required');
+      return Promise.reject(new Error('Market is required'));
     }
     return this.doRequest(this.PUBLIC_GET_TICKER, { market });
   }
@@ -172,7 +167,7 @@ class Bittrex {
    */
   publicGetMarketSummary(market) {
     if (!market) {
-      throw new Error('Market is required');
+      return Promise.reject(new Error('Market is required'));
     }
     return this.doRequest(this.PUBLIC_GET_MARKET_SUMMARY, { market });
   }
@@ -188,7 +183,7 @@ class Bittrex {
    */
   publicGetOrderBook(market, type = 'both', depth = 20) {
     if (!market) {
-      throw new Error('Market is required');
+      return Promise.reject(new Error('Market is required'));
     }
     return this.doRequest(this.PUBLIC_GET_ORDER_BOOK, { market, type, depth });
   }
@@ -202,7 +197,7 @@ class Bittrex {
    */
   publicGetMarketHistory(market) {
     if (!market) {
-      throw new Error('Market is required');
+      return Promise.reject(new Error('Market is required'));
     }
     return this.doRequest(this.PUBLIC_GET_MARKET_HISTORY, { market });
   }
@@ -221,14 +216,20 @@ class Bittrex {
    * @memberof Bittrex
    */
   marketBuyLimit(market, quantity, rate) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for market requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for market requests'));
+    }
     if (!market) {
-      throw new Error('Market is required');
+      return Promise.reject(new Error('Market is required'));
     }
     if (!quantity) {
-      throw new Error('Quantity is required');
+      return Promise.reject(new Error('Quantity is required'));
     }
     if (!rate) {
-      throw new Error('Rate is required');
+      return Promise.reject(new Error('Rate is required'));
     }
     return this.doRequest(this.MARKET_BUY_LIMIT, { market, quantity, rate });
   }
@@ -243,14 +244,20 @@ class Bittrex {
    * @memberof Bittrex
    */
   marketSellLimit(market, quantity, rate) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for market requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for market requests'));
+    }
     if (!market) {
-      throw new Error('Market is required');
+      return Promise.reject(new Error('Market is required'));
     }
     if (!quantity) {
-      throw new Error('Quantity is required');
+      return Promise.reject(new Error('Quantity is required'));
     }
     if (!rate) {
-      throw new Error('Rate is required');
+      return Promise.reject(new Error('Rate is required'));
     }
     return this.doRequest(this.MARKET_SELL_LIMIT, { market, quantity, rate });
   }
@@ -263,8 +270,14 @@ class Bittrex {
    * @memberof Bittrex
    */
   marketCancel(uuid) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for market requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for market requests'));
+    }
     if (!uuid) {
-      throw new Error('UUID is required');
+      return Promise.reject(new Error('UUID is required'));
     }
     return this.doRequest(this.MARKET_CANCEL, { uuid });
   }
@@ -277,8 +290,14 @@ class Bittrex {
    * @memberof Bittrex
    */
   marketGetOpenOrders(market) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for market requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for market requests'));
+    }
     if (!market) {
-      throw new Error('Market is required');
+      return Promise.reject(new Error('Market is required'));
     }
     return this.doRequest(this.MARKET_GET_OPEN_ORDERS, { market });
   }
@@ -294,6 +313,12 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountGetBalances() {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     return this.doRequest(this.ACCOUNT_GET_BALANCES);
   }
 
@@ -305,8 +330,14 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountGetBalance(currency) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     if (!currency) {
-      throw new Error('Currency is required');
+      return Promise.reject(new Error('Currency is required'));
     }
     return this.doRequest(this.ACCOUNT_GET_BALANCE, { currency });
   }
@@ -320,8 +351,14 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountGetDepositAddress(currency) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     if (!currency) {
-      throw new Error('Currency is required');
+      return Promise.reject(new Error('Currency is required'));
     }
     return this.doRequest(this.ACCOUNT_GET_DEPOSIT_ADDRESS, { currency });
   }
@@ -337,14 +374,20 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountWithdraw(currency, quantity, address, paymentid = null) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     if (!currency) {
-      throw new Error('Currency is required');
+      return Promise.reject(new Error('Currency is required'));
     }
     if (!quantity) {
-      throw new Error('Quantity is required');
+      return Promise.reject(new Error('Quantity is required'));
     }
     if (!address) {
-      throw new Error('Address is required');
+      return Promise.reject(new Error('Address is required'));
     }
     return this.doRequest(this.ACCOUNT_WITHDRAW, { currency, quantity, address, paymentid });
   }
@@ -357,8 +400,14 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountGetOrder(uuid) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     if (!uuid) {
-      throw new Error('UUID is required');
+      return Promise.reject(new Error('UUID is required'));
     }
     return this.doRequest(this.ACCOUNT_GET_ORDER, { uuid });
   }
@@ -371,6 +420,12 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountGetOrderHistory(market) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     return this.doRequest(this.ACCOUNT_GET_ORDER_HISTORY, { market });
   }
 
@@ -382,6 +437,12 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountGetWithdrawalHistory(currency) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     return this.doRequest(this.ACCOUNT_GET_WITHDRAWAL_HISTORY, { currency });
   }
 
@@ -393,6 +454,12 @@ class Bittrex {
    * @memberof Bittrex
    */
   accountGetDepositHistory(currency) {
+    if (!this.__apiKey) {
+      return Promise.reject(new Error('API key is required for account requests'));
+    }
+    if (!this.__apiSecret) {
+      return Promise.reject(new Error('API secret is required for account requests'));
+    }
     return this.doRequest(this.ACCOUNT_GET_DEPOSIT_HISTORY, { currency });
   }
 }
