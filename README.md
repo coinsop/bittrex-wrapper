@@ -77,6 +77,14 @@ If the result if false you will get success: false and the error in the message.
 5. Put your Two factor authentication number and click on Update Keys
 6. Copy your Key and Secret.
 
+## CAUTION
+
+** Depending on the permission that you give to your Keys you can make transactions and withdrawals with certains methods, always keep safe your KEYS, don't you put your Keys in the code. Use enviroment variables or other secure methods.**
+
+**WE ARE NOT RESPONSABLE FOR THE WRONG USE OF THIS APPLICATION OR FOR ANY MALFUNCTION, BREACH OR ANY OTHER PROBLEM WITH THE BITTREX API.**
+
+**YOU HAVE BEEN WARNED**
+
 ## Public methods
 
 * publicGetMarkets - Used to get the open and available trading markets at Bittrex along with other meta data.
