@@ -1,6 +1,6 @@
 {
   "name": "bittrex-wrapper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Bittrex exchange API wrapper",
   "main": "index.js",
   "scripts": {
