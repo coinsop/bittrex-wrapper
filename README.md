@@ -32,7 +32,7 @@ const bittrex = new Bittrex('YOUR API KEY', 'YOUR API SECRET');
 Example without API KEY and API SECRET for just public methods:
 
 ```javascript
-Bittrex = require('bittrex-wrapper');
+const Bittrex = require('bittrex-wrapper');
 
 const bittrex = new Bittrex();
 ```
@@ -40,7 +40,7 @@ const bittrex = new Bittrex();
 Once you have the client you can do request to the API like this:
 
 ```javascript
-Bittrex = require('bittrex-wrapper');
+const Bittrex = require('bittrex-wrapper');
 
 const bittrex = new Bittrex('YOUR API KEY', 'YOUR API SECRET');
 
