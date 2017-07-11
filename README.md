@@ -91,7 +91,7 @@ If the result if false you will get success: false and the error in the message.
 * publicGetMarketHistory(market) - Used to retrieve the latest trades that have occured for a specific market
 ** market - market required a string literal for the market (ex: BTC-LTC)
 
-## Private methods (API KEY and API SECRET required)
+## Private methods (API KEY and SECRET required)
 
 * marketBuyLimit(market, quantity, rate) - Used to place a buy order in a specific market
 ** market - required a string literal for the market (ex: BTC-LTC).
@@ -140,7 +140,7 @@ Open an issue on [Github](https://github.com/coinsop/bittrex-wrapper/issues)
 
 ## History
 
-1.0.0: Added all methos public and private.
+1.0.0: Added all methods public and private.
 
 ## Credits
 
