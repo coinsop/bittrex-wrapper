@@ -146,8 +146,8 @@ Open an issue on [Github](https://github.com/coinsop/bittrex-wrapper/issues)
 
 ## Credits
 
-[Luis Fuenmayor](https://github.com/fuelusumar)
-[Olivers De Abreu](https://github.com/oliversd)
+- [Luis Fuenmayor](https://github.com/fuelusumar)
+- [Olivers De Abreu](https://github.com/oliversd)
 
 ## License
 
