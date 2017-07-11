@@ -47,7 +47,7 @@ const bittrex = new Bittrex('YOUR API KEY', 'YOUR API SECRET');
 bittrex.publicGetTicker('BTC-LTC').then((response) => {
   console.log(response);
 }).catch((error) => {
-  consoel.log(error);
+  console.log(error);
 });
 ```
 All the methods always return a Promise.
