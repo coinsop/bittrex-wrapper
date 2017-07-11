@@ -25,7 +25,7 @@ The parameters are optional and have the following values:
 Example with API KEY and API SECRET for private and public methods:
 
 ```javascript
-Bittrex = require('bittrex-wrapper');
+const Bittrex = require('bittrex-wrapper');
 
 const bittrex = new Bittrex('YOUR API KEY', 'YOUR API SECRET');
 ```

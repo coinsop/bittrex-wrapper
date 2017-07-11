@@ -464,4 +464,4 @@ class Bittrex {
   }
 }
 
-export default Bittrex;
+module.exports = Bittrex;
