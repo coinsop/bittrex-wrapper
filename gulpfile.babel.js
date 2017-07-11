@@ -49,6 +49,8 @@ gulp.task('depcheck', depcheck());
 gulp.task('build', ['copy', 'depcheck'], () => {
   const presets = { presets: ['es2015'] };
   gulp.src(['src/*.js']).pipe(babel(presets)).pipe(gulp.dest('dist'));
+  gulp.src('./README.md').pipe(gulp.dest('dist'));
+  gulp.src('./LICENSE').pipe(gulp.dest('dist'));
   getSrcFolders('src').forEach((folder) => {
     gulp.src([`src/${folder}/*.js`]).pipe(babel(presets)).pipe(gulp.dest(`dist/${folder}`));
   });
