@@ -6,7 +6,9 @@ This a library that interacts with the Bittrex Exchange API
 
 bittrex-wrapper is available from npm
 
+```
 npm install bittrex-wrapper
+```
 
 ## Usage
 
@@ -80,49 +82,49 @@ If the result if false you will get success: false and the error in the message.
 * publicGetMarkets - Used to get the open and available trading markets at Bittrex along with other meta data.
 * publicGetCurrencies - Used to get all supported currencies at Bittrex along with other meta data.
 * publicGetTicker(market) - Used to get the current tick values for a market.
-** market: (string) ex: BTC-LTC (required).
+  * market: (string) ex: BTC-LTC (required).
 * publicGetMarketSummaries() - Used to get the last 24 hour summary of all active exchanges.
 * publicGetMarketSummary(market) - Used to get the last 24 hour summary of all active exchanges.
-** market: (string) ex: BTC-LTC (required).
+  * market: (string) ex: BTC-LTC (required).
 * publicGetOrderBook(market, type = 'both', depth = 20) - Used to get retrieve the orderbook for a given market
-**  market - required a string literal for the market (ex: BTC-LTC)
-** type='both' - required buy, sell or both type of orderbook to return
-** depth=20 - optional defaults to 20 - Max is 50
+  *  market - required a string literal for the market (ex: BTC-LTC)
+  * type='both' - required buy, sell or both type of orderbook to return
+  * depth=20 - optional defaults to 20 - Max is 50
 * publicGetMarketHistory(market) - Used to retrieve the latest trades that have occured for a specific market
-** market - market required a string literal for the market (ex: BTC-LTC)
+  * market - market required a string literal for the market (ex: BTC-LTC)
 
 ## Private methods (API KEY and SECRET required)
 
 * marketBuyLimit(market, quantity, rate) - Used to place a buy order in a specific market
-** market - required a string literal for the market (ex: BTC-LTC).
-** quantity - required the amount to purchase.
-** rate - required the rate at which to place the order.
+  * market - required a string literal for the market (ex: BTC-LTC).
+  * quantity - required the amount to purchase.
+  * rate - required the rate at which to place the order.
 * marketSellLimit(market, quantity, rate) - Used to place an sell order in a specific market
-** market - required a string literal for the market (ex: BTC-LTC).
-** quantity - required the amount to sell.
-** rate - required the rate at which to place the order.
+  * market - required a string literal for the market (ex: BTC-LTC).
+  * quantity - required the amount to sell.
+  * rate - required the rate at which to place the order.
 * marketCancel(uuid) - Used to cancel a buy or sell order
-** uuid - required uuid of buy or sell order
+  * uuid - required uuid of buy or sell order
 * marketGetOpenOrders(market) - Get all orders that you currently have opened. A specific market can be requested.
-** market - optional a string literal for the market (ie. BTC-LTC)
+  * market - optional a string literal for the market (ie. BTC-LTC)
 * accountGetBalances() - Used to retrieve all balances from your account
 * accountGetBalance(currency) - Used to retrieve the balance from your account for a specific currency
-** currency - required a string literal for the currency (ex: LTC)
+  * currency - required a string literal for the currency (ex: LTC)
 * accountGetDepositAddress(currency) - Used to retrieve or generate an address for a specific currency. If one does not exist, the call will fail and return ADDRESS_GENERATING until one is available.
-** currency - required a string literal for the currency (ie. BTC)
+  * currency - required a string literal for the currency (ie. BTC)
 * accountWithdraw(currency, quantity, address, paymentid = null) - Used to withdraw funds from your account. note: please account for txfee.
-** currency - required a string literal for the currency (ie. BTC)
-** quantity - required the quantity of coins to withdraw
-** address - required the address where to send the funds.
-** paymentid - optional used for CryptoNotes/BitShareX/Nxt
+  * currency - required a string literal for the currency (ie. BTC)
+  * quantity - required the quantity of coins to withdraw
+  * address - required the address where to send the funds.
+  * paymentid - optional used for CryptoNotes/BitShareX/Nxt
 * accountGetOrder(uuid) - Used to retrieve a single order by uuid.
-** uuid - required the uuid of the buy or sell order
+  * uuid - required the uuid of the buy or sell order
 * accountGetOrderHistory(market) - Used to retrieve your order history.
-** market - optional a string literal for the market (ie. BTC-LTC).
+  * market - optional a string literal for the market (ie. BTC-LTC).
 * accountGetWithdrawalHistory(currency) - Used to retrieve your withdrawal history.
-** currency - optional a string literal for the currecy (ie. BTC).
+  * currency - optional a string literal for the currecy (ie. BTC).
 * accountGetDepositHistory(currency) - Used to retrieve your deposit history.
-** currency - optional a string literal for the currecy (ie. BTC).
+  * currency - optional a string literal for the currecy (ie. BTC).
 
 If you want more info about the methods here you can find the documentation on the Bittrex API documentation [here](https://bittrex.com/home/api).
 
