@@ -289,15 +289,12 @@ class Bittrex {
    * @returns Promise
    * @memberof Bittrex
    */
-  marketGetOpenOrders(market) {
+  marketGetOpenOrders(market = '') {
     if (!this.__apiKey) {
       return Promise.reject(new Error('API key is required for market requests'));
     }
     if (!this.__apiSecret) {
       return Promise.reject(new Error('API secret is required for market requests'));
-    }
-    if (!market) {
-      return Promise.reject(new Error('Market is required'));
     }
     return this.doRequest(this.MARKET_GET_OPEN_ORDERS, { market });
   }
