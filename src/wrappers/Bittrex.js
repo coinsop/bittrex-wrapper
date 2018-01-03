@@ -386,7 +386,13 @@ class Bittrex {
     if (!address) {
       return Promise.reject(new Error('Address is required'));
     }
-    return this.doRequest(this.ACCOUNT_WITHDRAW, { currency, quantity, address, paymentid });
+    
+    const data = { currency, quantity, address };
+    if (paymentid !== null) {
+      Object.assign(data, paymentid);
+    }
+    
+    return this.doRequest(this.ACCOUNT_WITHDRAW, data);
   }
 
   /**
