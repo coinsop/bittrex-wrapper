@@ -4,10 +4,14 @@
   "description": "Bittrex exchange API wrapper",
   "main": "index.js",
   "scripts": {
-    "test": "babel-node ./node_modules/.bin/isparta cover _mocha",
-    "lint": "gulp lint",
-    "start": "gulp start",
-    "build": "gulp build"
+    "start": "nodemon src/index.js --exec babel-node",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors --compilers js:babel-core/register ./test --recursive --require babel-polyfill --timeout 10000",
+    "clean": "rm -rf dist",
+    "build": "npm run lint && npm run clean && mkdir dist && babel src -s -d dist && npm run files &&  npm run serve",
+    "serve": "DEBUG=* node dist/index.js",
+    "lint:watch": "esw -f simple-detail -w *.js src",
+    "lint": "eslint *.js src",
+    "files": "cp ./package.json dist/ && cp ./package-lock.json dist/ && cp ./README.md dist/ && cp ./LICENSE dist/"
   },
   "repository": {
     "type": "git",
@@ -28,13 +32,9 @@
     "eslint": "^3.14.1",
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-plugin-import": "^2.2.0",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-depcheck": "^1.2.0",
-    "gulp-eslint": "^3.0.1",
-    "gulp-rimraf": "^0.2.1",
     "isparta": "^4.0.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "nodemon": "^1.14.11"
   },
   "config": {
     "ghooks": {

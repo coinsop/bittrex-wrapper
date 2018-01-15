@@ -31,7 +31,13 @@ class Bittrex {
    *
    * @memberof Bittrex
    */
-  constructor(apiKey = null, apiSecret = null, apiProtocol = 'https', apiHost = 'bittrex.com', apiVersion = 'v1.1') {
+  constructor(
+    apiKey = null,
+    apiSecret = null,
+    apiProtocol = 'https',
+    apiHost = 'bittrex.com',
+    apiVersion = 'v1.1'
+  ) {
     this.__lastNonce = null;
     this.__apiProtocol = apiProtocol;
     this.__apiHost = apiHost;
@@ -92,21 +98,35 @@ class Bittrex {
    */
   doRequest(path, data) {
     return new Promise((resolve, reject) => {
-      const _data = Object.assign(data || {}, this.__apiKey && this.__apiSecret ? {
-        nonce: this.getNonce(),
-        apikey: this.__apiKey
-      } : {});
-      const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${this.__apiVersion}${path}?${querystring.stringify(_data)}`;
+      const _data = Object.assign(
+        data || {},
+        this.__apiKey && this.__apiSecret
+          ? {
+            nonce: this.getNonce(),
+            apikey: this.__apiKey
+          }
+          : {}
+      );
+      const _url = `${this.__apiProtocol}://${this.__apiHost}/api/${
+        this.__apiVersion
+      }${path}?${querystring.stringify(_data)}`;
       const apisign = this.__apiKey && this.__apiSecret ? this.getApiSign(_url) : null;
-      request({
-        method: 'GET',
-        host: this.__apiHost,
-        path: `/api/${this.__apiVersion}${path}`,
-        headers: apisign ? {
-          apisign,
-          'Content-Type': 'application/json'
-        } : { 'Content-Type': 'application/json' }
-      }, _data).then(res => resolve(res)).catch(err => reject(err));
+      request(
+        {
+          method: 'GET',
+          host: this.__apiHost,
+          path: `/api/${this.__apiVersion}${path}`,
+          headers: apisign
+            ? {
+              apisign,
+              'Content-Type': 'application/json'
+            }
+            : { 'Content-Type': 'application/json' }
+        },
+        _data
+      )
+        .then(res => resolve(res))
+        .catch(err => reject(err));
     });
   }
 
@@ -386,12 +406,12 @@ class Bittrex {
     if (!address) {
       return Promise.reject(new Error('Address is required'));
     }
-    
+
     const data = { currency, quantity, address };
     if (paymentid !== null) {
       Object.assign(data, paymentid);
     }
-    
+
     return this.doRequest(this.ACCOUNT_WITHDRAW, data);
   }
 
